@@ -1,0 +1,55 @@
+from discord.ext.commands import Bot
+from discord.http import Route
+from discord import Intents
+from config import BotConfig
+from core.scheduler import custom_scheduler_loop
+from utils import logging
+import time
+
+description = """
+Discord bot created for SETU COMP SCI.
+"""
+
+
+class DiscordBot(Bot):
+    def __init__(self):
+        super().__init__(
+            command_prefix='?',
+            description=description,
+            strip_after_prefix=True,
+            owner_ids=(1369058479771357277,),
+            intents=Intents.all()
+        )
+        self.config: BotConfig = BotConfig()
+        self.jobs = []
+        self.log = logging.setup()
+
+    async def on_ready(self) -> None:
+        print(f"Logged in as {self.user}")
+
+    async def ping(self):
+        start = time.perf_counter()
+        ws = self.latency
+        await self.http.request(Route("GET", "/users/@me"))
+        end = time.perf_counter()
+
+        return ws, end - start
+
+    async def setup_hook(self):
+        extensions = [
+            'cogs.jobs'
+        ]
+
+        await self.load_extensions(*extensions)
+
+        if self.jobs:
+            self.scheduler_task = self.loop.create_task(custom_scheduler_loop(self.jobs))
+            self.log.info(f"Jobs Registered -> {len(self.jobs)}")
+
+    async def load_extensions(self, *extensions):
+        for extension in extensions:
+            await self.load_extension(extension)
+
+    async def async_run(self) -> None:
+        await self.login(BotConfig.get('TOKEN'))
+        await self.connect()
