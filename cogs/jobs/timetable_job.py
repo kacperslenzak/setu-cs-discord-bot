@@ -12,7 +12,7 @@ class TimeTableJob(commands.Cog):
             ScheduledJob(self.friday_timetable_job, day_of_week="fri", hour=14, minute=10)  # Schedule every friday, 10 mins after 2 to allow for timetable update
         )
 
-    @commands.command(name='timetable')
+    @commands.hybrid_command(name="timetable", description="Generate a timetable for this week")
     async def _timetable(self, ctx):
         """Send the current week timetable for Comp Sci Year 1 W3/W4"""
         message = await ctx.send("Generating timetable. Please wait a few moments.", delete_after=3)  # we cant edit the message to include file, so let's delete this later

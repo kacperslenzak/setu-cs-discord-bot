@@ -1,4 +1,5 @@
 import discord
+from discord import app_commands
 from discord.ext.commands import Bot
 from discord.http import Route
 from discord import Intents
@@ -49,6 +50,8 @@ class DiscordBot(Bot):
         if self.jobs:
             self.scheduler_task = self.loop.create_task(custom_scheduler_loop(self.jobs))
             self.log.info(f"Jobs Registered -> {len(self.jobs)}")
+
+        await self.tree.sync()
 
     async def load_extensions(self, *extensions):
         for extension in extensions:
