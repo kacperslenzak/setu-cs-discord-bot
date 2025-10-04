@@ -15,6 +15,7 @@ class TimeTableJob(commands.Cog):
     @commands.command(name='timetable')
     async def _timetable(self, ctx):
         """Send the current week timetable for Comp Sci Year 1 W3/W4"""
+        message = await ctx.send("Generating timetable. Please wait a few moments.", delete_after=3)  # we cant edit the message to include file, so let's delete this later
         try:
             image_bytes = fetch_timetable_image()
             file = File(io.BytesIO(image_bytes), filename='timetable.png')
