@@ -65,5 +65,4 @@ def fetch_timetable_image(week=None):
     # Generate PNG as bytes buffer (no file saving)
     image_bytes = imgkit.from_string(html_template, False, config=config)
 
-    print(f"✅ Timetable image generated in memory for week {week}")
     return image_bytes  # return image as stream of bytes
