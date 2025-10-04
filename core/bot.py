@@ -1,3 +1,4 @@
+import discord
 from discord.ext.commands import Bot
 from discord.http import Route
 from discord import Intents
@@ -25,6 +26,9 @@ class DiscordBot(Bot):
         self.log = logging.setup()
 
     async def on_ready(self) -> None:
+        await self.change_presence(
+            status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="over the comp sci freaks 😇")
+        )
         print(f"Logged in as {self.user}")
 
     async def ping(self):
@@ -37,9 +41,9 @@ class DiscordBot(Bot):
 
     async def setup_hook(self):
         extensions = [
-            'cogs.jobs'
+            'cogs.jobs',
+            'cogs.commands'
         ]
-
         await self.load_extensions(*extensions)
 
         if self.jobs:

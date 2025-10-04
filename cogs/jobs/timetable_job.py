@@ -14,6 +14,7 @@ class TimeTableJob(commands.Cog):
 
     @commands.command(name='timetable')
     async def _timetable(self, ctx):
+        """Send the current week timetable for Comp Sci Year 1 W3/W4"""
         try:
             image_bytes = fetch_timetable_image()
             file = File(io.BytesIO(image_bytes), filename='timetable.png')
