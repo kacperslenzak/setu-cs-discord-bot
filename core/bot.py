@@ -51,7 +51,20 @@ class DiscordBot(Bot):
             self.scheduler_task = self.loop.create_task(custom_scheduler_loop(self.jobs))
             self.log.info(f"Jobs Registered -> {len(self.jobs)}")
 
-        await self.tree.sync()
+        await self.sync_command_tree()
+
+    async def sync_command_tree(self):
+        try:
+            synced = await self.tree.sync()
+            if not synced:
+                self.log.error("No commands synced. Check applications.commands scope!")
+            else:
+                self.log.info(f"Synced {len(synced)} commands")
+        except discord.HTTPException as e:
+            if "Missing Access" in str(e) or "403" in str(e):
+                self.log.error('❌ Missing applications.commands scope! Re-invite the bot.')
+            else:
+                self.log.error(f'❌ Sync error: {e}')
 
     async def load_extensions(self, *extensions):
         for extension in extensions:
