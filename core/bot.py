@@ -1,5 +1,4 @@
 import discord
-from discord import app_commands
 from discord.ext.commands import Bot
 from discord.http import Route
 from discord import Intents
@@ -7,6 +6,7 @@ from config import BotConfig
 from core.scheduler import custom_scheduler_loop
 from utils import logging
 import time
+from db import create_engine, create_async_session, init_db
 
 description = """
 Discord bot created for SETU COMP SCI.
@@ -25,8 +25,11 @@ class DiscordBot(Bot):
         self.config: BotConfig = BotConfig()
         self.jobs = []
         self.log = logging.setup()
+        self.engine = create_engine()
+        self.session = create_async_session(self.engine)
 
     async def on_ready(self) -> None:
+        """Setup after bot makes ws connection"""
         await self.change_presence(
             status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="over the comp sci freaks 😇")
         )
@@ -41,6 +44,8 @@ class DiscordBot(Bot):
         return ws, end - start
 
     async def setup_hook(self):
+        """Setup all requirements before first ws connection"""
+        await init_db(self.engine)
         extensions = [
             'cogs.jobs',
             'cogs.commands'
