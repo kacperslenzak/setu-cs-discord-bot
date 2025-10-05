@@ -1,4 +1,5 @@
 from discord.ext import commands
+from discord import app_commands
 from datetime import datetime
 from db.models import Reminder
 import asyncio
@@ -11,6 +12,7 @@ class RemindJob(commands.Cog):
         self.bot = bot
 
     @commands.hybrid_command(name="remind", description="Set a reminder at a given date")
+    @app_commands.describe(date="Please enter the date in format Day-Month. e.g. 05-10", time="Please enter the time in 24h format. e.g. 14:20", message="Please enter the message for the reminder.")
     async def _remind(self, ctx, date: str, time: str, *, message: str):
         """
         Save a reminder
