@@ -46,6 +46,7 @@ class DiscordBot(Bot):
     async def setup_hook(self):
         """Setup all requirements before first ws connection"""
         await init_db(self.engine)
+
         extensions = [
             'cogs.jobs',
             'cogs.commands'

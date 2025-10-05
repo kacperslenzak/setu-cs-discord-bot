@@ -2,6 +2,7 @@ from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, AsyncEngine
 from sqlalchemy.orm import sessionmaker
 from config import BotConfig
+from db.models import Reminder
 
 
 DATABASE_URL = BotConfig.get("DATABASE_URL")
