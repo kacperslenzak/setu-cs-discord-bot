@@ -10,15 +10,22 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 import imgkit
+import tempfile
 
-config = imgkit.config(wkhtmltoimage=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe")
+# config = imgkit.config(wkhtmltoimage=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe")
 
 
 def fetch_timetable_rows():
     url = "https://studentssp.setu.ie/timetables/StudentGroupTT.aspx"
     options = Options()
-    options.add_argument("--headless")
+    options.add_argument("--headless=new")
     options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
+    # 🔑 Create a unique Chrome profile per run to avoid lock conflicts
+    options.add_argument(f"--user-data-dir={tempfile.mkdtemp()}")
+
     driver = webdriver.Chrome(options=options)
     driver.get(url)
 
