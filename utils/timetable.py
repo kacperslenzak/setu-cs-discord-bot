@@ -5,10 +5,10 @@ from bs4 import BeautifulSoup
 import imgkit
 import time
 
-config = imgkit.config(wkhtmltoimage="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe")  # this is typically set in your computers env vars
+# config = imgkit.config(wkhtmltoimage="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe")  # this is typically set in your computers env vars
 
 
-def fetch_timetable_image(week=None):
+def generate_timetable(week=None):
     url = "https://studentssp.setu.ie/timetables/StudentGroupTT.aspx"
 
     options = Options()
@@ -63,6 +63,6 @@ def fetch_timetable_image(week=None):
     """
 
     # Generate PNG as bytes buffer (no file saving)
-    image_bytes = imgkit.from_string(html_template, False, config=config)
+    image_bytes = imgkit.from_string(html_template, False)  # config=config
 
     return image_bytes  # return image as stream of bytes

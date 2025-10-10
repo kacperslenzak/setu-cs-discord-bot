@@ -26,3 +26,5 @@ urllib3==2.5.0
 websocket-client==1.8.0
 wsproto==1.2.0
 yarl==1.21.0
+sqlmodel~=0.0.27
+SQLAlchemy~=2.0.43
