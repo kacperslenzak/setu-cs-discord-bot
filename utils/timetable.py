@@ -277,12 +277,12 @@ def generate_timetable(group: str or list):
             timetable = parse_rows_to_timetable(rows, g)
             times = get_sorted_times([timetable])
             html = timetable_to_html(timetable, f"Group {g}", times)
-            data.append(imgkit.from_string(html, False, config=config))
+            data.append(imgkit.from_string(html, False))  # config=config
         return data
     else:
         rows = fetch_timetable_rows()
         timetable = parse_rows_to_timetable(rows, group)
         times = get_sorted_times([timetable])
         html = timetable_to_html(timetable, f"Group {group}", times)
-        return imgkit.from_string(html, False, config=config)
+        return imgkit.from_string(html, False)  # config=config
 
