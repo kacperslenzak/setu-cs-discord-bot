@@ -23,6 +23,6 @@ jobs:
             cd /home/setu-cs-discord-bot
             git fetch origin main
             git reset --hard origin/main
-            pip install -r requirements.txt
+            python3 -m pip install -r requirements.txt
             sudo systemctl restart setu-discord-bot
           EOF
