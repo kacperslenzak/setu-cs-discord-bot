@@ -35,6 +35,13 @@ class TimeTableJob(commands.Cog):
         channel = self.bot.get_channel(channel_id)
         if channel:
             try:
+                await channel.purge(limit=None)
+            except discord.Forbidden:
+                self.bot.log.error("Bot does not have permission to delete messages")
+            except discord.HTTPException as e:
+                self.bot.log.error(f"Failed to delete messages from timetable channel: {e}")
+
+            try:
                 for g in ['W3', 'W4']:
                     image_bytes = generate_timetable(g)
                     file = File(io.BytesIO(image_bytes), filename='timetable.png')
