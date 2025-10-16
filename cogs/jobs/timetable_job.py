@@ -5,6 +5,7 @@ import discord
 import io
 from utils.timetable import generate_timetable
 from core.scheduler import ScheduledJob
+from config import BotConfig
 
 
 class TimeTableJob(commands.Cog):
@@ -31,7 +32,7 @@ class TimeTableJob(commands.Cog):
             await i.channel.send(f'Error fetching timetable\n```{str(e)}```')
 
     async def friday_timetable_job(self):
-        channel_id = 1424080247191634023
+        channel_id = BotConfig.get("timetable_job_channel_id")
         channel = self.bot.get_channel(channel_id)
         if channel:
             try:
