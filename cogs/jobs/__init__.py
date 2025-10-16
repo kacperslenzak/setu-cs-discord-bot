@@ -2,7 +2,7 @@ from cogs.jobs.timetable_job import TimeTableJob
 from cogs.jobs.remind import RemindJob
 
 
-class BaseJobManager(TimeTableJob, RemindJob, name="Timetable related commands"):
+class BaseJobManager(TimeTableJob, RemindJob, name="Job Commands (e.g timetable, reminder)"):
     def __init__(self, bot):
         super().__init__(bot)
         self.bot = bot
