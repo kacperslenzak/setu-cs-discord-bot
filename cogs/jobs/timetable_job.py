@@ -23,7 +23,8 @@ class TimeTableJob(commands.Cog):
     ])
     async def _timetable(self, i: discord.Interaction, group: app_commands.Choice[str]):
         """Send the current week timetable for Comp Sci Year 1 W3/W4"""
-        message = await i.response.send_message("Generating timetable. Please wait a few moments.", delete_after=3)  # we cant edit the message to include file, so let's delete this later
+        # noinspection PyUnresolvedReferences
+        await i.response.send_message("Generating timetable. Please wait a few moments.", delete_after=3)  # we cant edit the message to include file, so let's delete this later
         try:
             image_bytes = generate_timetable(group.value)
             file = File(io.BytesIO(image_bytes), filename='timetable.png')
