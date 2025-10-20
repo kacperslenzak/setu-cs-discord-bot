@@ -12,7 +12,7 @@ class TimeTableJob(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         bot.jobs.append(
-            ScheduledJob(self.friday_timetable_job, day_of_week="fri", hour=14, minute=10)  # Schedule every friday, 10 mins after 2 to allow for timetable update
+            ScheduledJob(self.friday_timetable_job, day_of_week="fri", hour=13, minute=10)  # this will be fixed. move back an hour due to CET timezone
         )
 
     @app_commands.command(name="timetable", description="Generate a timetable for this week")
@@ -47,6 +47,6 @@ class TimeTableJob(commands.Cog):
                 for g in ['W3', 'W4']:
                     image_bytes = generate_timetable(g)
                     file = File(io.BytesIO(image_bytes), filename='timetable.png')
-                    await channel.send(f"📅 Timetable for this week! Group {g}", file=file)
+                    await channel.send(f"📅 {g} timetable for this week!", file=file)
             except Exception as e:
                 self.bot.log.error(f"Error with timetable job: {str(e)}")
