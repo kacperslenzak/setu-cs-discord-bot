@@ -28,3 +28,4 @@ wsproto==1.2.0
 yarl==1.21.0
 sqlmodel~=0.0.27
 SQLAlchemy~=2.0.43
+requests

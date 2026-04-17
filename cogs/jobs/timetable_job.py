@@ -3,7 +3,7 @@ from discord import File
 from discord import app_commands
 import discord
 import io
-from utils.timetable import generate_timetable
+from timetable.timetable_generator import generate_timetable
 from core.scheduler import ScheduledJob
 from config import BotConfig
 

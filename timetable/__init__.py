@@ -1,0 +1,1 @@
+from timetable.scraper import SETUTimetableScraper

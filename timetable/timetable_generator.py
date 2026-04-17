@@ -1,61 +1,57 @@
-"""
-I generated this with chatgpt and im not ashamed of that
-"""
-
 import re
-import time
 from collections import defaultdict
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import Select
 import imgkit
-import tempfile
+
+from timetable import SETUTimetableScraper
+from timetable.scraper import merge_timetables
 
 config = imgkit.config(wkhtmltoimage='/usr/bin/wkhtmltoimage')
 
 
-def fetch_timetable_rows():
-    url = "https://studentssp.setu.ie/timetables/StudentGroupTT.aspx"
-    options = Options()
-    options.add_argument("--headless=new")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
+def fetch_timetable_rows(group="W3"):
+    """
+    Replacement for Selenium-based fetch.
+    Uses new scraper but returns rows in OLD format
+    so the rest of your pipeline still works.
+    """
 
-    # 🔑 Create a unique Chrome profile per run to avoid lock conflicts
-    options.add_argument(f"--user-data-dir={tempfile.mkdtemp()}")
+    scraper = SETUTimetableScraper()
+    scraper.warmup_fetch()
 
-    driver = webdriver.Chrome(options=options)
-    driver.get(url)
+    # Fetch both halves (same as your main script)
+    tt1 = scraper.fetch_timetable("kcmsc_b1-W_W3/W4")
+    tt2 = scraper.fetch_timetable("kcmsc_b1-W_W1/W2")
 
-    # select dropdowns (same values you used)
-    Select(driver.find_element("id", "cboSchool")).select_by_value("SS")
-    Select(driver.find_element("id", "CboDept")).select_by_value("548715F70874B2B1561DDC98FE61E5C0")
-    Select(driver.find_element("id", "CboPOS")).select_by_value("85EA4CF769354ECAD9F18363EC561526")
-    Select(driver.find_element("id", "CboStudParentGrp")).select_by_value("kcmsc_b1-W_W3/W4")
-
-    driver.find_element("id", "BtnRetrieve").click()
-    time.sleep(2)  # wait for the timetable to appear
-
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    driver.quit()
-
-    timetable_div = soup.find("div", {"id": "divTT"})
-    if not timetable_div:
-        raise RuntimeError("Could not find timetable on page")
-
-    # the timetable table is usually the second table in that div (as you used)
-    tables = timetable_div.find_all("table")
-    if len(tables) < 2:
-        raise RuntimeError("Unexpected timetable HTML structure")
-    table = tables[1]
+    merged = merge_timetables(tt1, tt2)
 
     rows = []
-    for tr in table.find_all("tr"):
-        cols = [td.get_text(strip=True) for td in tr.find_all(["th", "td"])]
-        if any(cols):
-            rows.append(cols)
+
+    # Add W group data
+    group_data = merged.get(group, {})
+
+    # Add ALL P group data
+    p_groups = [g for g in merged.keys() if g.startswith("P")]
+
+    for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
+        rows.append([day])
+
+        # 1. Add W group lessons
+        for lesson in group_data.get(day, []):
+            rows.append(lesson)
+
+        # 2. Add ALL P group lessons
+        for p in p_groups:
+            for lesson in merged.get(p, {}).get(day, []):
+                rows.append(lesson)
+
+    for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
+        rows.append([day])  # 👈 keeps your "day row" logic working
+
+        for lesson in group_data.get(day, []):
+            # lesson already matches old structure:
+            # [time, subject, group_info, type, week, staff, room]
+            rows.append(lesson)
+
     return rows
 
 
