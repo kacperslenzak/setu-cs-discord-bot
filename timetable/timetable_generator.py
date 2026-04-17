@@ -276,7 +276,7 @@ def generate_timetable(group: str or list):
             data.append(imgkit.from_string(html, False, config=config))
         return data
     else:
-        rows = fetch_timetable_rows()
+        rows = fetch_timetable_rows(group)
         timetable = parse_rows_to_timetable(rows, group)
         times = get_sorted_times([timetable])
         html = timetable_to_html(timetable, f"Group {group}", times)
